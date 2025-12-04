@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>MVP Check-in</title>
+
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+            text-align: center;
+        }
+        #reader {
+            width: 300px;
+            margin: auto;
+            margin-top: 30px;
+        }
+        #resultado {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: green;
+        }
+        #qrcodes {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .qr-box {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>MVP - Check-in por QR Code</h2>
+
+    <h3>QR Codes dos Eventos</h3>
+    <div id="qrcodes">
+        <div class="qr-box">
+            <p>Evento: Mostra do Conhecimento</p>
+            <div id="qr1"></div>
+        </div>
+
+        <div class="qr-box">
+            <p>Evento: Semana Acadêmica</p>
+            <div id="qr2"></div>
+        </div>
+
+        <div class="qr-box">
+            <p>Evento: Palestra de Tecnologia</p>
+            <div id="qr3"></div>
+        </div>
+    </div>
+
+    <h3>Leitor de QR Code</h3>
+    <div id="reader"></div>
+    <div id="resultado"></div>
+
+    <script>
+        // ========= GERAR QR CODES =========
+        const eventos = {
+            "evento1": "Mostra do Conhecimento",
+            "evento2": "Semana Acadêmica",
+            "evento3": "Palestra de Tecnologia"
+        };
+
+        new QRCode(document.getElementById("qr1"), "evento1");
+        new QRCode(document.getElementById("qr2"), "evento2");
+        new QRCode(document.getElementById("qr3"), "evento3");
+
+
+        // ========= LEITOR =========
+        function onScanSuccess(decodedText) {
+            const nome = eventos[decodedText] || "Evento desconhecido";
+
+            document.getElementById("resultado").innerText =
+                "Check-in realizado no evento: " + nome;
+
+            // (Opcional) Enviar para o backend
+            // fetch("https://seu-backend.com/checkin", {
+            //     method: "POST",
+            //     headers: { "Content-Type": "application/json" },
+            //     body: JSON.stringify({
+            //         evento: decodedText,
+            //         nome: nome,
+            //         horario: new Date().toISOString()
+            //     })
+            // });
+        }
+
+        const qrReader = new Html5Qrcode("reader");
+
+        qrReader.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: 250 },
+            onScanSuccess
+        );
+    </script>
+
+</body>
+</html>
